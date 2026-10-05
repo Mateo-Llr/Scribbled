@@ -9,6 +9,7 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Les
 - Aperçu dessiné de chaque personnage dans la liste de sélection.
 ### Modifié
 - La palette, le sélecteur de couleur et la pipette conservent l'outil de dessin actif.
+- La plateforme annoncée par « Une plateforme ! » est désormais au niveau du sol, plus courte et peut être traversée avec ↓ + Espace pour descendre dans le trou.
 
 ## [0.8.0]
 ### Ajouté
