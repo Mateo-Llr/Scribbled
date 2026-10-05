@@ -89,7 +89,7 @@ $('clear').onclick=()=>{if(!sel)return;sel.undo.push(sel.g.getImageData(0,0,W,W)
   const b=document.createElement('button');b.className='sw';b.style.background=c;b.onclick=()=>{color=c;$('col').value=c};$('pal').appendChild(b)});
 $('col').oninput=e=>{color=e.target.value};
 function mode(m){if(m!=='pick')lastTool=m;pivMode=m==='piv';tool=m==='er'?'er':m==='pick'?'pick':m==='bucket'?'bucket':'pen';
-  $('bPen').className=m==='pen'?'on':'';$('bEr').className=m==='er'?'on':'';$('bPick').className=m==='pick'?'on':'';$('bBucket').className=m==='bucket'?'on':'';$('bPiv').className=pivMode?'on':''}
+  $('bPen').classList.toggle('on',m==='pen');$('bEr').classList.toggle('on',m==='er');$('bPick').classList.toggle('on',m==='pick');$('bBucket').classList.toggle('on',m==='bucket');$('bPiv').classList.toggle('on',pivMode)}
 $('bPen').onclick=()=>mode('pen');$('bEr').onclick=()=>mode('er');$('bPick').onclick=()=>mode('pick');$('bBucket').onclick=()=>mode('bucket');$('bPiv').onclick=()=>mode('piv');
 $('anim').onchange=e=>{if(sel)sel.anim=e.target.value};
 // Placement

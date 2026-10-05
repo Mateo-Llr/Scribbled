@@ -25,7 +25,7 @@
 <meta name="twitter:image:alt" content="Logo Scribbled dessiné au crayon sur une page de cahier lignée.">
 <link rel="icon" href="icon.ico" sizes="any">
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Pixelify+Sans:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=interface-text-updated">
+<link rel="stylesheet" href="style.css?v=compact-tool-buttons">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -42,8 +42,10 @@
   <div class="tabs" id="tabs"></div>
   <div id="edwrap"></div>
   <div class="row" id="pal"></div>
-  <div class="row">
-    <button id="bPen" class="on">✏️ Crayon</button><button id="bEr">🧽 Gomme</button><button id="bPick">💉 Pipette</button><button id="bBucket">🪣 Seau</button><button id="bPiv">📍 Articulation</button>
+  <div class="row tool-row">
+    <div class="tool-buttons" aria-label="Outils de personnalisation">
+      <button id="bPen" class="tool-button on" aria-label="Crayon" title="Crayon">✏️ <span class="tool-label">Crayon</span></button><button id="bEr" class="tool-button" aria-label="Gomme" title="Gomme">🧽 <span class="tool-label">Gomme</span></button><button id="bPick" class="tool-button" aria-label="Pipette" title="Pipette">💉 <span class="tool-label">Pipette</span></button><button id="bBucket" class="tool-button" aria-label="Seau" title="Seau">🪣 <span class="tool-label">Seau</span></button><button id="bPiv" class="tool-button" aria-label="Articulation" title="Articulation">📍 <span class="tool-label">Articulation</span></button>
+    </div>
     <label>Taille <input id="brush" type="range" min="1" max="12" value="3"></label>
   </div>
   <div class="row"><input type="color" id="col" value="#2b2b3a"><button id="undo">↩ Annuler</button><button id="clear">Vider</button>
@@ -79,6 +81,6 @@
   </form>
 </dialog>
 <div id="voice"></div>
-<script src="game.js?v=character-import-export"></script>
+<script src="game.js?v=compact-tool-buttons"></script>
 </body>
 </html>

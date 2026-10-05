@@ -10,6 +10,7 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Les
 - Réinitialisation vers un personnage vierge sans effacer les sauvegardes existantes.
 - Aperçu dessiné de chaque personnage dans la liste de sélection.
 ### Modifié
+- Outils de personnalisation affichés en une seule rangée d'icônes compactes, avec le libellé visible au survol, au focus ou lorsque l'outil est sélectionné.
 - Libellés des actions de sélection et de sauvegarde de personnage clarifiés.
 - La palette, le sélecteur de couleur et la pipette conservent l'outil de dessin actif.
 - Le trou annoncé par « Une plateforme ! » reste visible sous un pont court au niveau du sol, traversable avec ↓ + Espace.

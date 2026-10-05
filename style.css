@@ -20,6 +20,11 @@ background:repeating-conic-gradient(#0000000d 0 25%,transparent 0 50%) 0 0/24px 
 #pm,#pv{position:absolute;width:16px;height:16px;border:3px solid #d33;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;background:#fff8}
 #pv{display:none;width:14px;height:14px;z-index:1000}
 .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
+.tool-buttons{display:flex;flex-wrap:nowrap;gap:4px}
+.tool-button{display:inline-flex;flex:none;align-items:center;justify-content:center;gap:4px;min-width:32px;height:34px;padding:2px 4px;white-space:nowrap}
+.tool-label{display:none}
+.tool-button:hover .tool-label,.tool-button:focus-visible .tool-label,.tool-button.on .tool-label{display:inline}
+.tool-row{column-gap:8px}
 .sw{width:26px;height:26px;border-radius:50% 40% 50% 40%;padding:0}
 input[type=range]{accent-color:var(--ink);width:120px}
 input[type=color]{width:34px;height:30px;border:2px solid var(--ink);padding:0;background:none}
