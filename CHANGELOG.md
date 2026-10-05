@@ -10,6 +10,7 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Les
 - Réinitialisation vers un personnage vierge sans effacer les sauvegardes existantes.
 - Aperçu dessiné de chaque personnage dans la liste de sélection.
 ### Modifié
+- Mise en page desktop rééquilibrée en faveur de l'éditeur, avec une zone de dessin adaptée à la hauteur disponible pour limiter le défilement.
 - Expansion fluide des outils, survol inactif bleu clair et champs numériques éditables avec unités pour les curseurs.
 - Outils de personnalisation affichés en une seule rangée d'icônes compactes, avec le libellé visible au survol, au focus ou lorsque l'outil est sélectionné.
 - Libellés des actions de sélection et de sauvegarde de personnage clarifiés.

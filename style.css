@@ -35,6 +35,11 @@ label:has(>input[type=range]){display:inline-flex;align-items:center;gap:5px;whi
 .range-value span{min-width:1em;font-size:15px}
 input[type=color]{width:34px;height:30px;border:2px solid var(--ink);padding:0;background:none}
 #stage{position:relative;height:620px;overflow:hidden;touch-action:none;cursor:grab;user-select:none}
+@media(min-width:861px){
+main{grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:12px 18px}
+#edwrap{max-width:min(440px,max(250px,calc(100vh - 500px)))}
+#stage{height:min(620px,max(300px,calc(100vh - 420px)))}
+}
 #layer{position:absolute;inset:0;filter:url(#boil);pointer-events:none}
 #actor{position:absolute;left:0;top:0;width:0;height:0}
 .spr{position:absolute;left:0;top:0;width:128px;height:128px;image-rendering:pixelated}
