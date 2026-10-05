@@ -4,6 +4,7 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Les
 
 ## [0.9.0]
 ### Ajouté
+- Effet boil animé et pixellisé appliqué aux textes de l'interface, en cohérence avec les dessins et la voix off.
 - Importation et exportation de personnages complets au format JSON depuis le sélecteur de personnages.
 - Métadonnées Open Graph et carte de partage avec le logo Scribbled sur une page lignée.
 - Sauvegarde locale de plusieurs personnages nommés, sélection du personnage par défaut et restauration au chargement.
