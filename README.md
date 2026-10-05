@@ -10,9 +10,9 @@ Tout le rendu est volontairement « brouillon » : pixels bruts (128×128 par pi
 
 ### Éditeur de personnage
 - Le personnage est composé de **pièces** (tête, corps, bras, jambes, accessoires…), chacune dessinée sur sa propre grille de **128×128 pixels**.
-- Outils : crayon, gomme, taille de pinceau (1–12 px), palette + sélecteur de couleur, annulation (25 niveaux), vider la pièce.
+- Outils : crayon, gomme, pipette (prélèvement d'une couleur dessinée), seau (remplissage contigu), taille de pinceau (1–12 px), palette + sélecteur de couleur, annulation (25 niveaux), vider la pièce.
 - Placement libre sur la feuille : déplacement à la souris/au doigt, flèches du clavier (Maj = ×10), taille, rotation, miroir, ordre des calques, suppression.
-- **Articulations** : chaque pièce a un point pivot (épaule, hanche…) posé avec 📍 ou glissé sur la feuille. Rotation et échelle se font autour de ce point.
+- **Articulations** : chaque pièce a un point pivot (épaule, hanche…) posé avec 📍 ou glissé sur la feuille. Rotation et échelle se font autour de ce point. Les pivots initiaux de la tête, des bras et des jambes sont placés pour faciliter l'assemblage.
 - **Animation de marche** par pièce : Fixe, Balancier A, Balancier B (opposé), Rebond.
 
 ### Mode jeu (▶ Jouer)

@@ -21,7 +21,7 @@ Créer un site web interactif permettant de **dessiner un personnage en pixel ar
 
 ### 4.1 Éditeur de pièces
 - **EF-01** Plusieurs pièces, chacune sur une grille 128×128 px ; création de pièces supplémentaires.
-- **EF-02** Outils : crayon, gomme, taille de pinceau, palette, sélecteur de couleur.
+- **EF-02** Outils : crayon, gomme, pipette, remplissage contigu au seau, taille de pinceau, palette, sélecteur de couleur.
 - **EF-03** Annulation (≥ 25 niveaux) et remise à zéro d'une pièce.
 - **EF-04** Dessin continu sans trou (interpolation entre deux points de pointeur) ; compatible souris et tactile.
 

@@ -42,15 +42,43 @@ function setPivot(p,nx,ny){ // déplace l'articulation sans bouger le dessin
   p.x+=-vx+sx*c-sy*s;p.y+=-vy+sx*s+sy*c;p.px=nx;p.py=ny;place();
 }
 // Dessin
-const dot=(p,x,y)=>{const b=+$('brush').value,h=b>>1;if(tool==='pen'){p.g.fillStyle=color;p.g.fillRect(x-h,y-h,b,b)}else p.g.clearRect(x-h,y-h,b,b)};
+const dot=(p,x,y)=>{const b=+$('brush').value,h=b>>1;if(tool==='pen'){p.g.fillStyle=color;p.g.fillRect(x-h,y-h,b,b)}else if(tool==='er')p.g.clearRect(x-h,y-h,b,b)};
 function line(p,x0,y0,x1,y1){const st=Math.max(Math.abs(x1-x0),Math.abs(y1-y0),1);
   for(let i=0;i<=st;i++)dot(p,Math.round(x0+(x1-x0)*i/st),Math.round(y0+(y1-y0)*i/st));sync(p)}
+function fill(p,x,y){
+  if(x<0||x>=W||y<0||y>=W)return;
+  const image=p.g.getImageData(0,0,W,W),data=image.data,start=y*W+x,offset=start*4;
+  const r=data[offset],g=data[offset+1],b=data[offset+2],a=data[offset+3];
+  const target=color.match(/^#([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i);
+  if(!target)return;
+  const nr=parseInt(target[1],16),ng=parseInt(target[2],16),nb=parseInt(target[3],16);
+  if(a===255&&r===nr&&g===ng&&b===nb)return;
+  const matches=i=>a===0?data[i+3]===0:data[i]===r&&data[i+1]===g&&data[i+2]===b&&data[i+3]===a;
+  const visited=new Uint8Array(W*W),stack=new Uint16Array(W*W);
+  let size=0;stack[size++]=start;visited[start]=1;
+  while(size){
+    const index=stack[--size],i=index*4;
+    data[i]=nr;data[i+1]=ng;data[i+2]=nb;data[i+3]=255;
+    const x=index%W;
+    for(const next of [index-W,index+1,index+W,index-1]){
+      if(next<0||next>=W*W||visited[next]||(next===index+1&&x===W-1)||(next===index-1&&x===0))continue;
+      if(matches(next*4)){visited[next]=1;stack[size++]=next}
+    }
+  }
+  p.g.putImageData(image,0,0);sync(p);
+}
 let last=null,pivMode=false;
 const pos=(e,p)=>{const r=p.c.getBoundingClientRect();return[Math.floor((e.clientX-r.left)/r.width*W),Math.floor((e.clientY-r.top)/r.height*W)]};
 edwrap.addEventListener('pointerdown',e=>{if(!sel)return;edwrap.setPointerCapture(e.pointerId);
   if(pivMode){last=1;setPivot(sel,...pos(e,sel));return}
+  const [x,y]=pos(e,sel);
+  if(tool==='pick'){
+    if(x>=0&&x<W&&y>=0&&y<W){const data=sel.g.getImageData(x,y,1,1).data;if(data[3]){color='#'+[data[0],data[1],data[2]].map(v=>v.toString(16).padStart(2,'0')).join('');$('col').value=color}}
+    mode('pen');return
+  }
   sel.undo.push(sel.g.getImageData(0,0,W,W));if(sel.undo.length>25)sel.undo.shift();
-  last=pos(e,sel);line(sel,...last,...last)});
+  if(tool==='bucket'){fill(sel,x,y);return}
+  last=[x,y];line(sel,...last,...last)});
 edwrap.addEventListener('pointermove',e=>{if(!last)return;
   if(pivMode){setPivot(sel,...pos(e,sel));return}
   const q=pos(e,sel);line(sel,...last,...q);last=q});
@@ -60,9 +88,9 @@ $('clear').onclick=()=>{if(!sel)return;sel.undo.push(sel.g.getImageData(0,0,W,W)
 ['#2b2b3a','#ffffff','#e0453a','#f28c28','#f6d743','#5cb85c','#2f9e8f','#3b82d6','#7a4bc4','#e86fa8','#8b5a2b','#f2c9a0'].forEach(c=>{
   const b=document.createElement('button');b.className='sw';b.style.background=c;b.onclick=()=>{color=c;$('col').value=c;mode('pen')};$('pal').appendChild(b)});
 $('col').oninput=e=>{color=e.target.value;mode('pen')};
-function mode(m){pivMode=m==='piv';tool=m==='er'?'er':'pen';
-  $('bPen').className=m==='pen'?'on':'';$('bEr').className=m==='er'?'on':'';$('bPiv').className=pivMode?'on':''}
-$('bPen').onclick=()=>mode('pen');$('bEr').onclick=()=>mode('er');$('bPiv').onclick=()=>mode('piv');
+function mode(m){pivMode=m==='piv';tool=m==='er'?'er':m==='pick'?'pick':m==='bucket'?'bucket':'pen';
+  $('bPen').className=m==='pen'?'on':'';$('bEr').className=m==='er'?'on':'';$('bPick').className=m==='pick'?'on':'';$('bBucket').className=m==='bucket'?'on':'';$('bPiv').className=pivMode?'on':''}
+$('bPen').onclick=()=>mode('pen');$('bEr').onclick=()=>mode('er');$('bPick').onclick=()=>mode('pick');$('bBucket').onclick=()=>mode('bucket');$('bPiv').onclick=()=>mode('piv');
 $('anim').onchange=e=>{if(sel)sel.anim=e.target.value};
 // Placement
 $('sc').oninput=e=>{if(sel){sel.s=+e.target.value;place()}};
@@ -232,7 +260,7 @@ function step(dt){
 
 // Départ : un perso en 6 pièces vides, déjà placées
 const cx=Math.min(stage.clientWidth||600,700)/2-64;
-addPart('Bras D',cx+62,175,64,18,'B');addPart('Jambe D',cx+28,330,64,14,'A');
-addPart('Corps',cx,170,64,64,'bob');addPart('Jambe G',cx-28,330,64,14,'B');
-addPart('Bras G',cx-62,175,64,18,'A');addPart('Tête',cx,10,64,118,'bob');
+addPart('Bras D',cx+62,175,64,24,'B');addPart('Jambe D',cx+28,330,64,20,'A');
+addPart('Corps',cx,170,64,64,'bob');addPart('Jambe G',cx-28,330,64,20,'B');
+addPart('Bras G',cx-62,175,64,24,'A');addPart('Tête',cx,10,64,110,'bob');
 select(parts[5]);
