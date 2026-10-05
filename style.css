@@ -6,9 +6,10 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:'Patrick Hand','Comic Sans MS',cursive;font-size:18px;min-height:100vh;
 background-image:linear-gradient(var(--line) 1px,transparent 1px);background-size:100% 32px;background-position:0 20px}
 body::before{content:"";position:fixed;left:48px;top:0;bottom:0;width:2px;background:var(--margin);opacity:.7;pointer-events:none}
-main{padding:14px 14px 30px 66px;display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:22px;align-items:start}
+main{padding:14px 14px 30px 66px;display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:12px 22px;align-items:start}
 @media(max-width:860px){main{grid-template-columns:1fr;padding-left:58px}body::before{left:40px}}
-h1{margin:0 0 6px;font-size:30px;grid-column:1/-1;font-weight:400;transform:rotate(-1deg)}
+h1{margin:0 0 -14px;font-size:30px;grid-column:1/-1;font-weight:400;transform:rotate(-1deg)}
+h1 img{display:block}
 h1,h2,p,button,label,select,.playonly,.saved-character-name,.character-import-preview,#characterName{filter:url(#boilL)}
 .box{border:2.5px solid var(--ink);border-radius:255px 15px 225px 15px/15px 225px 15px 255px;padding:12px;background:rgba(251,248,238,.75)}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
