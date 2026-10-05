@@ -4,6 +4,7 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Les
 
 ## [0.9.0]
 ### Ajouté
+- Métadonnées Open Graph et carte de partage avec le logo Scribbled sur une page lignée.
 - Sauvegarde locale de plusieurs personnages nommés, sélection du personnage par défaut et restauration au chargement.
 - Réinitialisation vers un personnage vierge sans effacer les sauvegardes existantes.
 - Aperçu dessiné de chaque personnage dans la liste de sélection.

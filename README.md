@@ -2,6 +2,8 @@
 
 Un petit site interactif où l'on **dessine son personnage en pixel art** sur une feuille de cahier, puis où on le **fait jouer dans un platformer** dont les niveaux sont tracés directement sur la page. Le projet est jouable sur [GitHub Pages](https://mateo-llr.github.io/Scribbled/).
 
+Les liens partagés affichent une carte Open Graph avec le logo dessiné et la texture de page de cahier (`assets/og-image.png`).
+
 Tout le rendu est volontairement « brouillon » : pixels bruts (128×128 par pièce) et **boil lines** (les traits tremblent en permanence, comme une animation dessinée à la main).
 
 > Site 100 % statique : HTML + CSS + JavaScript, **aucune dépendance, aucun build**.
