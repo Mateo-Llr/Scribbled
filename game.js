@@ -151,7 +151,7 @@ const Z={
 '1,0':{p:[['i',0,420,G],['b',420,520,G],['i',520,600,G],['i',700,1000,G],['p',380,640,250]],w:[],
  t:[T(60,G,60,"Ça glisse. La glace, c’est bleu."),T(470,G,50,"Le vert fait rebondir. Essaie !"),T(510,250,70,"Le coin secret. Il n’y a rien. Désolée."),T(650,G,45,"Un trou ? Il y a sûrement une page dessous…")]},
 '2,0':{p:[['p',0,300,G],['r',300,430,G],['p',700,1000,G],
- ['p',430,700,G,true], // sol comblé, traversable vers le bas avec ↓ + Espace
+ ['p',480,650,G,true], // pont visible au-dessus du trou, traversable avec ↓ + Espace
  ['p',60,200,450],['p',300,440,360],['p',560,700,270],['p',800,940,180]],w:[],
  t:[T(60,G,60,"Cette page est plus haute que les autres."),T(560,G,90,"Une plateforme ! Pour redescendre : ↓ + Espace."),T(870,180,70,"Ce n’était pas la fin. La page continue vers la droite…")]},
 '1,1':{p:[['p',0,150,G],['b',150,260,G],['p',260,560,G],['i',560,780,G],['r',780,880,G],['p',880,1000,G],['p',300,420,330]],w:[[500,430,G]],
@@ -171,9 +171,9 @@ const has=(dx,dy)=>Z[(zx+dx)+','+(zy+dy)];
 function build(){
   const z=Z[zx+','+zy],C={p:'#2b2b3a',i:'#3b82d6',b:'#2faa4a'};const FC={p:'#a1693c',i:'#6fb0ee',b:'#4fb866',r:'#e0605a'};
   let h='<defs>'+Object.entries(FC).map(([k,c])=>`<pattern id="h${k}" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><line x1="0" y1="0" x2="0" y2="9" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/></pattern>`).join('')+'</defs>';
-  const gs=z.p.filter(q=>q[3]===G),bd=x=>`<line x1="${x}" x2="${x}" y1="${G}" y2="${VH}" stroke="#2b2b3a" stroke-width="5" stroke-linecap="round"/>`;
+  const gs=z.p.filter(q=>q[3]===G&&!q[4]),bd=x=>`<line x1="${x}" x2="${x}" y1="${G}" y2="${VH}" stroke="#2b2b3a" stroke-width="5" stroke-linecap="round"/>`;
   gs.forEach(q=>{if(q[1]>0&&!gs.some(o=>o!==q&&o[2]===q[1]))h+=bd(q[1]);if(q[2]<VW&&!gs.some(o=>o!==q&&o[1]===q[2]))h+=bd(q[2])});
-  z.p.forEach(([t,a,b,y])=>{if(y===G)h+=`<rect x="${a}" y="${y}" width="${b-a}" height="${VH-y}" fill="${FC[t]}" opacity=".13"/><rect x="${a}" y="${y+4}" width="${b-a}" height="${VH-y-4}" fill="url(#h${t})"/>`;
+  z.p.forEach(([t,a,b,y,platform])=>{if(y===G&&!platform)h+=`<rect x="${a}" y="${y}" width="${b-a}" height="${VH-y}" fill="${FC[t]}" opacity=".13"/><rect x="${a}" y="${y+4}" width="${b-a}" height="${VH-y-4}" fill="url(#h${t})"/>`;
     if(t==='r'){let d=`M${a} ${y}`;for(let x=a+8,u=1;x<=b;x+=8,u^=1)d+=` L${x} ${y-u*12}`;
     h+=`<path d="${d}" fill="none" stroke="#e0453a" stroke-width="4" stroke-linejoin="round"/>`}
     else h+=`<line x1="${a}" x2="${b}" y1="${y}" y2="${y}" stroke="${C[t]}" stroke-width="${t==='p'?5:8}" stroke-linecap="round"/>`});
