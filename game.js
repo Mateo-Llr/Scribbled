@@ -3,6 +3,7 @@ const layer=$('layer'),actor=$('actor'),stage=$('stage'),box=$('sel'),pv=$('pv')
 const rangeIds=['brush','gs','sc','rot'];
 function syncRangeValue(id){const range=$(id),value=$(id+'Value');if(range&&value)value.value=range.value}
 let parts=[],sel=null,n=0,tool='pen',color='#2b2b3a',playing=false,lastTool='pen';
+let viewScale=1,viewX=0,viewY=0;
 let seed=1;setInterval(()=>{seed=seed%5+1;document.querySelectorAll('.t').forEach(t=>t.setAttribute('seed',seed))},125);
 
 function addPart(name,x,y,px,py,anim,s=1.5){
@@ -16,11 +17,28 @@ const xf=(p,off=0,bob=0)=>`translate(${p.x}px,${p.y+bob}px) rotate(${p.r+off}deg
 function style(el,p,off,bob){el.style.transform=xf(p,off,bob);el.style.transformOrigin=`${p.px}px ${p.py}px`}
 function place(){
   parts.forEach((p,i)=>{style(p.sc,p);p.sc.style.zIndex=i});
+  if(!playing&&parts.length){
+    layer.style.transform='none';
+    const sr=stage.getBoundingClientRect(),originX=sr.left+stage.clientLeft,originY=sr.top+stage.clientTop;
+    const rects=parts.map(p=>p.sc.getBoundingClientRect());
+    const minX=Math.min(...rects.map(r=>r.left-originX)),maxX=Math.max(...rects.map(r=>r.right-originX));
+    const minY=Math.min(...rects.map(r=>r.top-originY)),maxY=Math.max(...rects.map(r=>r.bottom-originY));
+    viewScale=Math.min(1,stage.clientWidth/(maxX-minX),stage.clientHeight/(maxY-minY));
+    viewX=(stage.clientWidth-(maxX-minX)*viewScale)/2-minX*viewScale;
+    viewY=(stage.clientHeight-(maxY-minY)*viewScale)/2-minY*viewScale;
+    layer.style.transformOrigin='0 0';
+    layer.style.transform=`matrix(${viewScale},0,0,${viewScale},${viewX},${viewY})`;
+  }else if(!playing){
+    viewScale=1;viewX=viewY=0;layer.style.transform='none';
+  }else{
+    viewScale=1;viewX=viewY=0;
+  }
   const show=sel&&!playing;
   box.style.display=pv.style.display=show?'block':'none';
   if(show){style(box,sel);box.style.zIndex=999;pv.style.left=sel.x+sel.px+'px';pv.style.top=sel.y+sel.py+'px'}
   const m=$('pm');if(m&&sel){m.style.left=sel.px/W*100+'%';m.style.top=sel.py/W*100+'%'}
 }
+new ResizeObserver(()=>place()).observe(stage);
 function select(p){
   sel=p;edwrap.innerHTML='';
   if(p){edwrap.appendChild(p.c);const m=document.createElement('div');m.id='pm';edwrap.appendChild(m);
@@ -105,7 +123,7 @@ function hit(p,X,Y){const[l,m]=toLocal(p,X,Y);return l>=0&&m>=0&&l<W&&m<W&&p.g.g
 let drag=null;
 stage.addEventListener('pointerdown',e=>{
   if(playing)return;
-  const r=stage.getBoundingClientRect(),X=e.clientX-r.left,Y=e.clientY-r.top;
+  const r=stage.getBoundingClientRect(),X=(e.clientX-r.left-viewX)/viewScale,Y=(e.clientY-r.top-viewY)/viewScale;
   let t=null,mode='move';
   if(sel&&Math.hypot(X-(sel.x+sel.px),Y-(sel.y+sel.py))<14){t=sel;mode='piv'}
   else{for(let i=parts.length-1;i>=0;i--)if(hit(parts[i],X,Y)){t=parts[i];break}
@@ -115,7 +133,7 @@ stage.addEventListener('pointerdown',e=>{
   drag={mode,dx:X-t.x,dy:Y-t.y};stage.setPointerCapture(e.pointerId);stage.style.cursor='grabbing';
 });
 stage.addEventListener('pointermove',e=>{
-  if(!drag||!sel)return;const r=stage.getBoundingClientRect(),X=e.clientX-r.left,Y=e.clientY-r.top;
+  if(!drag||!sel)return;const r=stage.getBoundingClientRect(),X=(e.clientX-r.left-viewX)/viewScale,Y=(e.clientY-r.top-viewY)/viewScale;
   if(drag.mode==='piv')setPivot(sel,...toLocal(sel,X,Y));else{sel.x=X-drag.dx;sel.y=Y-drag.dy;place()}
 });
 ['pointerup','pointercancel'].forEach(t=>stage.addEventListener(t,()=>{drag=null;stage.style.cursor=playing?'default':'grab'}));
@@ -201,7 +219,7 @@ function tr(dx,dy,X,Y){zx+=dx;zy+=dy;st.X=X;st.Y=Y;build();cp={zx,zy,X,Y}}
 function die(){say('Aïe ! On recommence.',2);zx=cp.zx;zy=cp.zy;st.X=cp.X;st.Y=cp.Y;st.vy=st.vx=0;build()}
 function fit(){const k=Math.min(innerWidth/VW,innerHeight/VH);
   layer.style.cssText=`inset:auto;left:${(innerWidth-VW*k)/2}px;top:${(innerHeight-VH*k)/2}px;width:${VW}px;height:${VH}px;transform-origin:0 0;transform:scale(${k})`}
-addEventListener('resize',()=>{if(playing)fit()});
+addEventListener('resize',()=>{if(playing)fit();else place()});
 function togglePlay(){
   if(!playing){
     if(!parts.length)return;

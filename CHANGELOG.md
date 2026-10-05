@@ -11,6 +11,8 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Les
 - Aperçu dessiné de chaque personnage dans la liste de sélection.
 ### Modifié
 - Mise en page desktop rééquilibrée en faveur de l'éditeur, avec une zone de dessin adaptée à la hauteur disponible pour limiter le défilement.
+- Répartition de l'espace améliorée sur les fenêtres intermédiaires afin que le panneau de jeu et ses commandes restent visibles.
+- Aperçu du personnage automatiquement recentré et ajusté à la zone de jeu disponible.
 - Expansion fluide des outils, survol inactif bleu clair et champs numériques éditables avec unités pour les curseurs.
 - Outils de personnalisation affichés en une seule rangée d'icônes compactes, avec le libellé visible au survol, au focus ou lorsque l'outil est sélectionné.
 - Libellés des actions de sélection et de sauvegarde de personnage clarifiés.
