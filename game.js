@@ -321,6 +321,36 @@ function restoreCharacter(character,images){
   select(parts[character.selected]||parts[0]||null);mode('pen');
   activeCharacterId=character.id;activeCharacterName=character.name;baselineParts=JSON.stringify(serializeParts());
 }
+function drawCharacterPreview(canvas,character,images){
+  const width=112,height=92,padding=6,ctx=canvas.getContext('2d');
+  canvas.width=width;canvas.height=height;
+  ctx.imageSmoothingEnabled=false;
+  const bounds=[];
+  images.forEach((image,index)=>{
+    const scratch=document.createElement('canvas');scratch.width=scratch.height=W;
+    const scratchCtx=scratch.getContext('2d',{willReadFrequently:true});scratchCtx.drawImage(image,0,0);
+    const pixels=scratchCtx.getImageData(0,0,W,W).data;
+    let x0=W,y0=W,x1=-1,y1=-1;
+    for(let y=0;y<W;y++)for(let x=0;x<W;x++)if(pixels[(y*W+x)*4+3]){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x+1);y1=Math.max(y1,y+1)}
+    if(x1<0)return;
+    const part=character.parts[index],angle=part.r*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
+    for(const [x,y]of[[x0,y0],[x1,y0],[x0,y1],[x1,y1]]){
+      const dx=(x-part.px)*part.s*part.f,dy=(y-part.py)*part.s;
+      bounds.push([part.x+part.px+dx*c-dy*s,part.y+part.py+dx*s+dy*c]);
+    }
+  });
+  if(!bounds.length){canvas.dataset.empty='true';return}
+  const minX=Math.min(...bounds.map(point=>point[0])),maxX=Math.max(...bounds.map(point=>point[0]));
+  const minY=Math.min(...bounds.map(point=>point[1])),maxY=Math.max(...bounds.map(point=>point[1]));
+  const scale=Math.min((width-padding*2)/(maxX-minX||1),(height-padding*2)/(maxY-minY||1));
+  ctx.setTransform(scale,0,0,scale,padding-minX*scale,padding-minY*scale);
+  images.forEach((image,index)=>{
+    const part=character.parts[index];
+    ctx.save();ctx.translate(part.x+part.px,part.y+part.py);ctx.rotate(part.r*Math.PI/180);
+    ctx.scale(part.s*part.f,part.s);ctx.translate(-part.px,-part.py);ctx.drawImage(image,0,0);ctx.restore();
+  });
+  canvas.dataset.empty='false';
+}
 function saveCharacter(entered){
   const name=entered.trim();
   if(!name){characterStatus('Le nom du personnage ne peut pas être vide.',true);return}
@@ -355,9 +385,14 @@ function showCharacterPicker(){
   if(!characterStore.characters.length){
     const message=document.createElement('p');message.textContent='Aucun personnage sauvegardé pour le moment.';list.appendChild(message);
   }else characterStore.characters.forEach(character=>{
-    const button=document.createElement('button');
-    button.textContent=character.name+(character.id===characterStore.defaultId?' (par défaut)':'');
+    const button=document.createElement('button');button.className='saved-character';
+    const preview=document.createElement('canvas');preview.className='character-preview';preview.setAttribute('aria-hidden','true');
+    const name=document.createElement('span');name.className='saved-character-name';
+    name.textContent=character.name+(character.id===characterStore.defaultId?' (par défaut)':'');
+    button.append(preview,name);
     button.onclick=()=>chooseCharacter(character);list.appendChild(button);
+    decodeImages(character).then(images=>drawCharacterPreview(preview,character,images))
+      .catch(error=>{characterStatus(`Impossible de créer l’aperçu de « ${character.name} » : ${error.message}`,true)});
   });
   $('charactersDialog').showModal();
 }

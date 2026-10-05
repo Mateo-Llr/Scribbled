@@ -34,6 +34,10 @@ input[type=color]{width:34px;height:30px;border:2px solid var(--ink);padding:0;b
 dialog{max-width:min(440px,calc(100vw - 32px));max-height:80vh;overflow:auto;border:2px solid var(--ink);border-radius:14px;background:var(--paper);color:var(--ink);font:inherit}
 dialog::backdrop{background:#0006}
 #savedCharacters{display:grid;gap:8px;margin:12px 0}
+.saved-character{display:flex;align-items:center;gap:12px;min-height:108px;text-align:left}
+.character-preview{flex:none;width:112px;height:92px;image-rendering:pixelated;background-color:var(--paper);background-image:repeating-conic-gradient(#00000012 0 25%,transparent 0 50%);background-size:12px 12px}
+.character-preview[data-empty="true"]{border:1px dashed var(--ink);background-image:none}
+.saved-character-name{font-weight:600}
 #saveCharacterForm input{display:block;width:100%;margin-top:6px;font:inherit}
 body.play .edit,body.play h1{display:none}body:not(.play) .playonly{display:none}
 body.play .box:not(.edit){border:0;background:none;padding:0}

@@ -10,7 +10,7 @@ Tout le rendu est volontairement « brouillon » : pixels bruts (128×128 par pi
 
 ### Éditeur de personnage
 - Le personnage est composé de **pièces** (tête, corps, bras, jambes, accessoires…), chacune dessinée sur sa propre grille de **128×128 pixels**.
-- **Nouveau** réinitialise l'éditeur aux pièces de départ sans supprimer les sauvegardes. **Sauver par défaut** enregistre le personnage sous un nom dans le navigateur et en fait le personnage chargé au prochain passage. **Choisir par défaut** permet de retrouver une autre sauvegarde.
+- **Nouveau** réinitialise l'éditeur aux pièces de départ sans supprimer les sauvegardes. **Sauver par défaut** enregistre le personnage sous un nom dans le navigateur et en fait le personnage chargé au prochain passage. **Choisir par défaut** affiche un aperçu dessiné de chaque personnage enregistré avant de le charger.
 - Les personnages et leurs pièces, pivots, placements, calques et animations sont stockés localement dans le navigateur. Ils ne sont pas synchronisés entre appareils ; utilisez le même navigateur et ne supprimez pas ses données de site pour les conserver.
 - Outils : crayon, gomme, pipette (prélèvement d'une couleur dessinée), seau (remplissage contigu), taille de pinceau (1–12 px), palette + sélecteur de couleur, annulation (25 niveaux), vider la pièce.
 - Choisir une couleur dans la palette ou avec la pipette conserve l'outil de dessin sélectionné.
