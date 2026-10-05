@@ -1,5 +1,7 @@
 const W=128,$=id=>document.getElementById(id);
 const layer=$('layer'),actor=$('actor'),stage=$('stage'),box=$('sel'),pv=$('pv'),tabs=$('tabs'),edwrap=$('edwrap');
+const rangeIds=['brush','gs','sc','rot'];
+function syncRangeValue(id){const range=$(id),value=$(id+'Value');if(range&&value)value.value=range.value}
 let parts=[],sel=null,n=0,tool='pen',color='#2b2b3a',playing=false,lastTool='pen';
 let seed=1;setInterval(()=>{seed=seed%5+1;document.querySelectorAll('.t').forEach(t=>t.setAttribute('seed',seed))},125);
 
@@ -22,7 +24,7 @@ function place(){
 function select(p){
   sel=p;edwrap.innerHTML='';
   if(p){edwrap.appendChild(p.c);const m=document.createElement('div');m.id='pm';edwrap.appendChild(m);
-    $('sc').value=p.s;$('rot').value=p.r;$('anim').value=p.anim}
+    $('sc').value=p.s;$('rot').value=p.r;syncRangeValue('sc');syncRangeValue('rot');$('anim').value=p.anim}
   renderTabs();place();
 }
 function renderTabs(){
@@ -204,7 +206,7 @@ function togglePlay(){
   if(!playing){
     if(!parts.length)return;
     document.activeElement.blur();
-    const b=bounds(),gs=Math.max(.15,Math.min(1,110/b.h));$('gs').value=gs;
+    const b=bounds(),gs=Math.max(.15,Math.min(1,110/b.h));$('gs').value=gs;syncRangeValue('gs');
     plat=document.createElementNS('http://www.w3.org/2000/svg','svg');plat.id='plat';plat.setAttribute('viewBox',`0 0 ${VW} ${VH}`);
     layer.insertBefore(plat,actor);
     zx=0;zy=1;cp={zx,zy,X:100,Y:G};
@@ -220,6 +222,24 @@ function togglePlay(){
 }
 $('play').onclick=togglePlay;
 $('gs').oninput=e=>{if(st)st.gs=+e.target.value};
+rangeIds.forEach(id=>{
+  const range=$(id),value=$(id+'Value');
+  range.addEventListener('input',()=>syncRangeValue(id));
+  value.addEventListener('input',()=>{
+    const next=value.valueAsNumber;
+    if(Number.isFinite(next)&&next>=range.min*1&&next<=range.max*1){
+      range.value=String(next);
+      range.dispatchEvent(new Event('input',{bubbles:true}));
+    }
+  });
+  value.addEventListener('change',()=>{
+    const next=value.valueAsNumber;
+    range.value=String(Number.isFinite(next)?Math.max(+range.min,Math.min(+range.max,next)):+range.value);
+    range.dispatchEvent(new Event('input',{bubbles:true}));
+    syncRangeValue(id);
+  });
+  syncRangeValue(id);
+});
 function step(dt){
   const s=st,z=Z[zx+','+zy],ch=s.b.h*s.gs,ax=keys.r-keys.l,sp=keys.run?400:230,ice=s.ground&&s.surf==='i';
   s.t+=dt;

@@ -21,12 +21,18 @@ background:repeating-conic-gradient(#0000000d 0 25%,transparent 0 50%) 0 0/24px 
 #pv{display:none;width:14px;height:14px;z-index:1000}
 .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
 .tool-buttons{display:flex;flex-wrap:nowrap;gap:4px}
-.tool-button{display:inline-flex;flex:none;align-items:center;justify-content:center;gap:4px;min-width:32px;height:34px;padding:2px 4px;white-space:nowrap}
-.tool-label{display:none}
-.tool-button:hover .tool-label,.tool-button:focus-visible .tool-label,.tool-button.on .tool-label{display:inline}
+.tool-button{display:inline-flex;flex:none;align-items:center;justify-content:center;gap:0;min-width:32px;height:34px;padding:2px 4px;white-space:nowrap;transition:padding .2s ease,background-color .15s ease}
+.tool-button.on{background:var(--hl);box-shadow:2px 2px 0 var(--ink)}
+.tool-button:hover:not(.on){background:#cfe8ff}
+.tool-label{display:inline-block;max-width:0;overflow:hidden;opacity:0;margin-left:0;transition:max-width .2s ease,opacity .15s ease,margin-left .2s ease}
+.tool-button:hover .tool-label,.tool-button:focus-visible .tool-label,.tool-button.on .tool-label{max-width:110px;opacity:1;margin-left:4px}
 .tool-row{column-gap:8px}
 .sw{width:26px;height:26px;border-radius:50% 40% 50% 40%;padding:0}
-input[type=range]{accent-color:var(--ink);width:120px}
+input[type=range]{accent-color:var(--ink);width:100px;vertical-align:middle}
+label:has(>input[type=range]){display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.range-value{display:inline-flex;align-items:center;gap:2px}
+.range-value input[type=number]{width:5em;padding:1px 3px;border:1px solid var(--ink);border-radius:5px;background:var(--paper);color:var(--ink);font:inherit;font-size:15px;text-align:right}
+.range-value span{min-width:1em;font-size:15px}
 input[type=color]{width:34px;height:30px;border:2px solid var(--ink);padding:0;background:none}
 #stage{position:relative;height:620px;overflow:hidden;touch-action:none;cursor:grab;user-select:none}
 #layer{position:absolute;inset:0;filter:url(#boil);pointer-events:none}

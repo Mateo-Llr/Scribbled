@@ -25,7 +25,7 @@
 <meta name="twitter:image:alt" content="Logo Scribbled dessiné au crayon sur une page de cahier lignée.">
 <link rel="icon" href="icon.ico" sizes="any">
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Pixelify+Sans:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=compact-tool-buttons">
+<link rel="stylesheet" href="style.css?v=tool-values-transition">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -46,7 +46,7 @@
     <div class="tool-buttons" aria-label="Outils de personnalisation">
       <button id="bPen" class="tool-button on" aria-label="Crayon" title="Crayon">✏️ <span class="tool-label">Crayon</span></button><button id="bEr" class="tool-button" aria-label="Gomme" title="Gomme">🧽 <span class="tool-label">Gomme</span></button><button id="bPick" class="tool-button" aria-label="Pipette" title="Pipette">💉 <span class="tool-label">Pipette</span></button><button id="bBucket" class="tool-button" aria-label="Seau" title="Seau">🪣 <span class="tool-label">Seau</span></button><button id="bPiv" class="tool-button" aria-label="Articulation" title="Articulation">📍 <span class="tool-label">Articulation</span></button>
     </div>
-    <label>Taille <input id="brush" type="range" min="1" max="12" value="3"></label>
+    <label>Taille <input id="brush" type="range" min="1" max="12" step="1" value="3"><span class="range-value"><input id="brushValue" type="number" min="1" max="12" step="1" value="3" aria-label="Taille du pinceau"><span>px</span></span></label>
   </div>
   <div class="row"><input type="color" id="col" value="#2b2b3a"><button id="undo">↩ Annuler</button><button id="clear">Vider</button>
     <label>Marche <select id="anim"><option value="none">Fixe</option><option value="A">Balancier A</option><option value="B">Balancier B</option><option value="bob">Rebond</option></select></label></div>
@@ -54,10 +54,10 @@
 </section>
 <section class="box">
   <div class="row" id="bar"><button id="play" style="font-size:22px">▶ Jouer</button>
-    <span class="playonly"><label>Taille <input id="gs" type="range" min="0.15" max="1" step="0.01" value="0.5"></label> ← → / Q D · Maj courir · Espace saut (appui long = plus haut) · ↓+Espace descendre</span></div>
+    <span class="playonly"><label>Taille <input id="gs" type="range" min="0.15" max="1" step="0.01" value="0.5"><span class="range-value"><input id="gsValue" type="number" min="0.15" max="1" step="0.01" value="0.5" aria-label="Taille du personnage en jeu"><span>×</span></span></label> ← → / Q D · Maj courir · Espace saut (appui long = plus haut) · ↓+Espace descendre</span></div>
   <div class="row edit">
-    <label>Taille <input id="sc" type="range" min="0.3" max="3" step="0.05" value="1.5"></label>
-    <label>Rotation <input id="rot" type="range" min="-180" max="180" value="0"></label>
+    <label>Taille <input id="sc" type="range" min="0.3" max="3" step="0.05" value="1.5"><span class="range-value"><input id="scValue" type="number" min="0.3" max="3" step="0.05" value="1.5" aria-label="Taille de la pièce"><span>×</span></span></label>
+    <label>Rotation <input id="rot" type="range" min="-180" max="180" step="1" value="0"><span class="range-value"><input id="rotValue" type="number" min="-180" max="180" step="1" value="0" aria-label="Rotation de la pièce"><span>°</span></span></label>
   </div>
   <div class="row edit"><button id="flip">⇋ Miroir</button><button id="front">▲ Devant</button><button id="back">▼ Derrière</button><button id="del">🗑 Supprimer</button></div>
   <div id="stage"><div id="layer"><div id="actor"></div></div><div id="sel"></div><div id="pv"></div></div>
@@ -81,6 +81,6 @@
   </form>
 </dialog>
 <div id="voice"></div>
-<script src="game.js?v=compact-tool-buttons"></script>
+<script src="game.js?v=tool-values-transition"></script>
 </body>
 </html>
