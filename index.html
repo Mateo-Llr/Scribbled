@@ -15,6 +15,10 @@
 <main>
 <h1>✎ Scribbled — Mon carnet à persos</h1>
 <section class="box edit">
+  <div class="row" id="characterActions">
+    <button id="newCharacter">＋ Nouveau</button><button id="chooseCharacter">Choisir par défaut</button><button id="saveCharacter">Sauver par défaut</button>
+  </div>
+  <p id="characterStatus" class="hint" role="status" aria-live="polite"></p>
   <div class="tabs" id="tabs"></div>
   <div id="edwrap"></div>
   <div class="row" id="pal"></div>
@@ -40,6 +44,19 @@
 
 </section>
 </main>
+<dialog id="charactersDialog">
+  <h2>Choisir un personnage par défaut</h2>
+  <div id="savedCharacters"></div>
+  <button id="closeCharacters">Fermer</button>
+</dialog>
+<dialog id="saveCharacterDialog">
+  <form id="saveCharacterForm">
+    <h2>Sauvegarder le personnage</h2>
+    <label for="characterName">Nom du personnage</label>
+    <input id="characterName" maxlength="60" required>
+    <div class="row"><button type="submit">Sauvegarder</button><button id="cancelSaveCharacter" type="button">Annuler</button></div>
+  </form>
+</dialog>
 <div id="voice"></div>
 <script src="game.js"></script>
 </body>

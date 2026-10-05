@@ -52,6 +52,8 @@ Créer un site web interactif permettant de **dessiner un personnage en pixel ar
 - **EF-22** Voix off : texte déclenché par proximité, saisi lettre par lettre, sans redémarrer si la même phrase est déjà affichée.
 - **EF-23** Cohérence de niveau : aucun raccourci contournant les mécaniques, aucune zone inaccessible, passages dans les deux sens, plateforme d'arrivée après un passage vers le haut.
 - **EF-24** Lisibilité : sols pleins hachurés avec bordures latérales aux creux et aux trous.
+- **EF-25** Sauvegardes locales nommées de personnages complets, sélection du personnage par défaut et restauration au chargement.
+- **EF-26** La sélection d'une couleur (palette, sélecteur ou pipette) conserve l'outil de dessin précédemment actif.
 
 ## 5. Exigences non fonctionnelles
 - **ENF-01** Site statique, sans framework, sans build, sans dépendance JavaScript externe.
@@ -60,7 +62,7 @@ Créer un site web interactif permettant de **dessiner un personnage en pixel ar
 - **ENF-04** Interface responsive (mobile : colonnes empilées, boutons tactiles).
 - **ENF-05** Tolérance aux encoches mobiles (`safe-area-inset`).
 - **ENF-06** Seule ressource externe : Google Fonts (Patrick Hand, Pixelify Sans) avec polices de repli.
-- **ENF-07** Aucune donnée personnelle collectée ni stockée.
+- **ENF-07** Aucune donnée personnelle n'est transmise ; les personnages sont stockés localement dans le navigateur.
 
 ## 6. Architecture
 - `index.html` : structure, filtres SVG (`#boil` pour la feuille, `#boilL` allégé pour l'éditeur et la voix off).
@@ -76,9 +78,10 @@ Créer un site web interactif permettant de **dessiner un personnage en pixel ar
 4. Chaque trou ou creux est visible grâce aux bordures latérales.
 5. Un texte ne se réécrit jamais quand il est déjà en cours d'affichage.
 6. Un appui bref donne un petit saut, un appui long un grand saut.
+7. Je peux enregistrer plusieurs personnages dans ce navigateur, choisir celui chargé par défaut et le retrouver après rechargement.
 
 ## 8. Évolutions envisagées
-- Sauvegarde locale et export/import du personnage (PNG, JSON).
+- Export/import du personnage (PNG, JSON).
 - Éditeur de niveaux intégré.
 - Sons et musique.
 - Nouveaux éléments : plateformes qui s'effondrent, ennemis sauteurs, clés et portes, collectibles, chronomètre.

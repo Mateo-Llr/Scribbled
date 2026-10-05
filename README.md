@@ -10,7 +10,10 @@ Tout le rendu est volontairement « brouillon » : pixels bruts (128×128 par pi
 
 ### Éditeur de personnage
 - Le personnage est composé de **pièces** (tête, corps, bras, jambes, accessoires…), chacune dessinée sur sa propre grille de **128×128 pixels**.
+- **Nouveau** réinitialise l'éditeur aux pièces de départ sans supprimer les sauvegardes. **Sauver par défaut** enregistre le personnage sous un nom dans le navigateur et en fait le personnage chargé au prochain passage. **Choisir par défaut** permet de retrouver une autre sauvegarde.
+- Les personnages et leurs pièces, pivots, placements, calques et animations sont stockés localement dans le navigateur. Ils ne sont pas synchronisés entre appareils ; utilisez le même navigateur et ne supprimez pas ses données de site pour les conserver.
 - Outils : crayon, gomme, pipette (prélèvement d'une couleur dessinée), seau (remplissage contigu), taille de pinceau (1–12 px), palette + sélecteur de couleur, annulation (25 niveaux), vider la pièce.
+- Choisir une couleur dans la palette ou avec la pipette conserve l'outil de dessin sélectionné.
 - Placement libre sur la feuille : déplacement à la souris/au doigt, flèches du clavier (Maj = ×10), taille, rotation, miroir, ordre des calques, suppression.
 - **Articulations** : chaque pièce a un point pivot (épaule, hanche…) posé avec 📍 ou glissé sur la feuille. Rotation et échelle se font autour de ce point. Les pivots initiaux de la tête, des bras et des jambes sont placés pour faciliter l'assemblage.
 - **Animation de marche** par pièce : Fixe, Balancier A, Balancier B (opposé), Rebond.
@@ -96,7 +99,7 @@ Types de plateformes `p` : `'p'` normale, `'i'` glace, `'b'` ressort, `'r'` poin
 Les mots-clés colorés de la voix off se règlent dans le tableau `KW`.
 
 ## Limites connues
-- Pas de sauvegarde ni d'export du personnage (rechargement = perte du dessin).
+- Les sauvegardes sont locales à ce navigateur : pas de synchronisation entre appareils ni d'export/import pour le moment.
 - Pas de multijoueur, pas de son.
 - Une pièce = une grille de 128×128 ; un seul ensemble de pièces par session.
 

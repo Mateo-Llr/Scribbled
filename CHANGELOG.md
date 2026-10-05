@@ -2,6 +2,13 @@
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Les dates sont à compléter.
 
+## [0.9.0]
+### Ajouté
+- Sauvegarde locale de plusieurs personnages nommés, sélection du personnage par défaut et restauration au chargement.
+- Réinitialisation vers un personnage vierge sans effacer les sauvegardes existantes.
+### Modifié
+- La palette, le sélecteur de couleur et la pipette conservent l'outil de dessin actif.
+
 ## [0.8.0]
 ### Ajouté
 - Bordures latérales aux blocs de sol (creux et trous bien visibles), sans trait entre deux sols contigus ni sur le bord des zones.

@@ -1,6 +1,6 @@
 const W=128,$=id=>document.getElementById(id);
 const layer=$('layer'),actor=$('actor'),stage=$('stage'),box=$('sel'),pv=$('pv'),tabs=$('tabs'),edwrap=$('edwrap');
-let parts=[],sel=null,n=0,tool='pen',color='#2b2b3a',playing=false;
+let parts=[],sel=null,n=0,tool='pen',color='#2b2b3a',playing=false,lastTool='pen';
 let seed=1;setInterval(()=>{seed=seed%5+1;document.querySelectorAll('.t').forEach(t=>t.setAttribute('seed',seed))},125);
 
 function addPart(name,x,y,px,py,anim,s=1.5){
@@ -74,7 +74,7 @@ edwrap.addEventListener('pointerdown',e=>{if(!sel)return;edwrap.setPointerCaptur
   const [x,y]=pos(e,sel);
   if(tool==='pick'){
     if(x>=0&&x<W&&y>=0&&y<W){const data=sel.g.getImageData(x,y,1,1).data;if(data[3]){color='#'+[data[0],data[1],data[2]].map(v=>v.toString(16).padStart(2,'0')).join('');$('col').value=color}}
-    mode('pen');return
+    mode(lastTool);return
   }
   sel.undo.push(sel.g.getImageData(0,0,W,W));if(sel.undo.length>25)sel.undo.shift();
   if(tool==='bucket'){fill(sel,x,y);return}
@@ -86,9 +86,9 @@ edwrap.addEventListener('pointermove',e=>{if(!last)return;
 $('undo').onclick=()=>{if(sel&&sel.undo.length){sel.g.putImageData(sel.undo.pop(),0,0);sync(sel)}};
 $('clear').onclick=()=>{if(!sel)return;sel.undo.push(sel.g.getImageData(0,0,W,W));sel.g.clearRect(0,0,W,W);sync(sel)};
 ['#2b2b3a','#ffffff','#e0453a','#f28c28','#f6d743','#5cb85c','#2f9e8f','#3b82d6','#7a4bc4','#e86fa8','#8b5a2b','#f2c9a0'].forEach(c=>{
-  const b=document.createElement('button');b.className='sw';b.style.background=c;b.onclick=()=>{color=c;$('col').value=c;mode('pen')};$('pal').appendChild(b)});
-$('col').oninput=e=>{color=e.target.value;mode('pen')};
-function mode(m){pivMode=m==='piv';tool=m==='er'?'er':m==='pick'?'pick':m==='bucket'?'bucket':'pen';
+  const b=document.createElement('button');b.className='sw';b.style.background=c;b.onclick=()=>{color=c;$('col').value=c};$('pal').appendChild(b)});
+$('col').oninput=e=>{color=e.target.value};
+function mode(m){if(m!=='pick')lastTool=m;pivMode=m==='piv';tool=m==='er'?'er':m==='pick'?'pick':m==='bucket'?'bucket':'pen';
   $('bPen').className=m==='pen'?'on':'';$('bEr').className=m==='er'?'on':'';$('bPick').className=m==='pick'?'on':'';$('bBucket').className=m==='bucket'?'on':'';$('bPiv').className=pivMode?'on':''}
 $('bPen').onclick=()=>mode('pen');$('bEr').onclick=()=>mode('er');$('bPick').onclick=()=>mode('pick');$('bBucket').onclick=()=>mode('bucket');$('bPiv').onclick=()=>mode('piv');
 $('anim').onchange=e=>{if(sel)sel.anim=e.target.value};
@@ -258,9 +258,130 @@ function step(dt){
   actor.style.transform=`translate(${s.X-s.b.cx}px,${s.Y-s.b.fy}px) scale(${s.dir*s.gs},${s.gs})`;
 }
 
-// Départ : un perso en 6 pièces vides, déjà placées
-const cx=Math.min(stage.clientWidth||600,700)/2-64;
-addPart('Bras D',cx+62,175,64,24,'B');addPart('Jambe D',cx+28,330,64,20,'A');
-addPart('Corps',cx,170,64,64,'bob');addPart('Jambe G',cx-28,330,64,20,'B');
-addPart('Bras G',cx-62,175,64,24,'A');addPart('Tête',cx,10,64,110,'bob');
-select(parts[5]);
+const CHARACTER_KEY='scribbled.characters.v1';
+let characterStore={version:1,defaultId:null,characters:[]},activeCharacterId=null,activeCharacterName='',baselineParts='',characterRevision=0;
+const characterStatus=(message,error=false)=>{$('characterStatus').textContent=message;$('characterStatus').dataset.error=error?'true':'false'};
+function buildStarter(){
+  actor.replaceChildren();parts=[];sel=null;
+  const cx=Math.min(stage.clientWidth||600,700)/2-64;
+  addPart('Bras D',cx+62,175,64,24,'B');addPart('Jambe D',cx+28,330,64,20,'A');
+  addPart('Corps',cx,170,64,64,'bob');addPart('Jambe G',cx-28,330,64,20,'B');
+  addPart('Bras G',cx-62,175,64,24,'A');addPart('Tête',cx,10,64,110,'bob');
+  select(parts[5]);mode('pen');
+}
+function serializeParts(){
+  return parts.map(p=>({name:p.name,x:p.x,y:p.y,px:p.px,py:p.py,s:p.s,r:p.r,f:p.f,anim:p.anim,image:p.c.toDataURL('image/png')}));
+}
+function validateStore(store){
+  if(!store||store.version!==1||!Array.isArray(store.characters)||(store.defaultId!==null&&typeof store.defaultId!=='string'))throw Error('Format de sauvegarde invalide.');
+  const ids=new Set();
+  for(const character of store.characters){
+    if(!character||typeof character.id!=='string'||!character.id||ids.has(character.id)||typeof character.name!=='string'||!character.name||!Array.isArray(character.parts)||!Number.isInteger(character.selected))throw Error('Une fiche de personnage enregistrée est invalide.');
+    ids.add(character.id);
+    for(const p of character.parts){
+      if(!p||typeof p.name!=='string'||![p.x,p.y,p.px,p.py,p.s,p.r].every(Number.isFinite)||p.s<=0||(p.f!==1&&p.f!==-1)||!['none','A','B','bob'].includes(p.anim)||typeof p.image!=='string'||!p.image.startsWith('data:image/png;base64,'))throw Error('Les données d’une pièce enregistrée sont invalides.');
+    }
+    if(character.selected<0||character.selected>=Math.max(character.parts.length,1))throw Error('La pièce sélectionnée dans une sauvegarde est invalide.');
+  }
+  if(store.defaultId!==null&&!ids.has(store.defaultId))throw Error('Le personnage par défaut est introuvable dans les sauvegardes.');
+  return store;
+}
+function readCharacterStore(){
+  try{
+    const raw=localStorage.getItem(CHARACTER_KEY);
+    if(raw===null)return null;
+    return validateStore(JSON.parse(raw));
+  }catch(error){
+    characterStatus(`Impossible de lire les personnages sauvegardés : ${error.message}`,true);
+    return null;
+  }
+}
+function writeCharacterStore(next){
+  try{localStorage.setItem(CHARACTER_KEY,JSON.stringify(next));characterStore=next;return true}
+  catch(error){characterStatus(`Impossible d’enregistrer le personnage dans ce navigateur : ${error.message}`,true);return false}
+}
+function isCharacterDirty(){return baselineParts!==JSON.stringify(serializeParts())}
+function makeRecord(name,id){
+  return{id,name,parts:serializeParts(),selected:Math.max(0,parts.indexOf(sel))};
+}
+function decodeImages(character){
+  return Promise.all(character.parts.map(part=>new Promise((resolve,reject)=>{
+    const image=new Image();
+    image.onload=()=>image.naturalWidth===W&&image.naturalHeight===W?resolve(image):reject(Error(`L’image de la pièce « ${part.name} » n’a pas les dimensions attendues.`));
+    image.onerror=()=>reject(Error(`Impossible de charger l’image de la pièce « ${part.name} ».`));
+    image.src=part.image;
+  })));
+}
+function restoreCharacter(character,images){
+  actor.replaceChildren();parts=[];sel=null;
+  character.parts.forEach((data,index)=>{
+    const p=addPart(data.name,data.x,data.y,data.px,data.py,data.anim,data.s);
+    p.r=data.r;p.f=data.f;p.g.drawImage(images[index],0,0);sync(p);p.undo=[];
+  });
+  select(parts[character.selected]||parts[0]||null);mode('pen');
+  activeCharacterId=character.id;activeCharacterName=character.name;baselineParts=JSON.stringify(serializeParts());
+}
+function saveCharacter(entered){
+  const name=entered.trim();
+  if(!name){characterStatus('Le nom du personnage ne peut pas être vide.',true);return}
+  if(name.length>60){characterStatus('Le nom du personnage ne peut pas dépasser 60 caractères.',true);return}
+  try{
+    const existing=characterStore.characters.find(item=>item.name.toLocaleLowerCase()===name.toLocaleLowerCase());
+    if(existing&&existing.id!==activeCharacterId&&!window.confirm(`Remplacer le personnage « ${existing.name} » ?`))return;
+    const id=existing?existing.id:activeCharacterId||(crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    const record=makeRecord(name,id);
+    const characters=characterStore.characters.filter(item=>item.id!==id);
+    characters.push(record);
+    if(!writeCharacterStore({version:1,defaultId:id,characters}))return false;
+    characterRevision++;
+    activeCharacterId=id;activeCharacterName=name;baselineParts=JSON.stringify(serializeParts());
+    characterStatus(`« ${name} » est sauvegardé et défini comme personnage par défaut.`);
+    return true;
+  }catch(error){characterStatus(`Impossible de sauvegarder le personnage : ${error.message}`,true);return false}
+}
+async function chooseCharacter(character){
+  if(isCharacterDirty()&&!window.confirm('Les modifications non sauvegardées seront perdues. Continuer ?'))return;
+  try{
+    const images=await decodeImages(character);
+    const next={...characterStore,defaultId:character.id};
+    if(!writeCharacterStore(next))return;
+    restoreCharacter(character,images);
+    $('charactersDialog').close();
+    characterStatus(`« ${character.name} » est chargé et défini comme personnage par défaut.`);
+  }catch(error){characterStatus(`Impossible de charger le personnage : ${error.message}`,true)}
+}
+function showCharacterPicker(){
+  const list=$('savedCharacters');list.replaceChildren();
+  if(!characterStore.characters.length){
+    const message=document.createElement('p');message.textContent='Aucun personnage sauvegardé pour le moment.';list.appendChild(message);
+  }else characterStore.characters.forEach(character=>{
+    const button=document.createElement('button');
+    button.textContent=character.name+(character.id===characterStore.defaultId?' (par défaut)':'');
+    button.onclick=()=>chooseCharacter(character);list.appendChild(button);
+  });
+  $('charactersDialog').showModal();
+}
+$('newCharacter').onclick=()=>{
+  if(isCharacterDirty()&&!window.confirm('Les modifications non sauvegardées seront perdues. Créer un nouveau personnage ?'))return;
+  characterRevision++;
+  buildStarter();activeCharacterId=null;activeCharacterName='';baselineParts=JSON.stringify(serializeParts());
+  characterStatus('Nouveau personnage vierge. Sauvegardez-le pour le retrouver plus tard.');
+};
+$('chooseCharacter').onclick=()=>{characterRevision++;showCharacterPicker()};
+$('saveCharacter').onclick=()=>{$('characterName').value=activeCharacterName||'';$('saveCharacterDialog').showModal();$('characterName').focus()};
+$('saveCharacterForm').onsubmit=e=>{e.preventDefault();if(saveCharacter($('characterName').value))$('saveCharacterDialog').close()};
+$('cancelSaveCharacter').onclick=()=>$('saveCharacterDialog').close();
+$('closeCharacters').onclick=()=>$('charactersDialog').close();
+buildStarter();
+baselineParts=JSON.stringify(serializeParts());
+const loadedStore=readCharacterStore();
+if(loadedStore){
+  characterStore=loadedStore;
+  const defaultCharacter=characterStore.characters.find(item=>item.id===characterStore.defaultId);
+  if(defaultCharacter){const revision=characterRevision;decodeImages(defaultCharacter).then(images=>{
+    if(revision!==characterRevision){characterStatus('Le chargement automatique a été ignoré car vous avez déjà changé de personnage.');return}
+    if(isCharacterDirty()&&!window.confirm('Charger le personnage par défaut ? Les modifications non sauvegardées seront perdues.'))return;
+    restoreCharacter(defaultCharacter,images);characterStatus(`Personnage par défaut « ${defaultCharacter.name} » chargé.`);
+  }).catch(error=>characterStatus(`Impossible de charger le personnage par défaut : ${error.message}`,true));
+  }else characterStatus('Aucun personnage par défaut. Créez-en un ou choisissez une sauvegarde.');
+}else if(!$('characterStatus').textContent)characterStatus('Personnage vierge. Sauvegardez-le pour le retrouver plus tard.');
