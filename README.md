@@ -1,6 +1,6 @@
-# ✎ Carnet à persos
+# ✎ Scribbled
 
-Un petit site interactif où l'on **dessine son personnage en pixel art** sur une feuille de cahier, puis où on le **fait jouer dans un platformer** dont les niveaux sont tracés directement sur la page.
+Un petit site interactif où l'on **dessine son personnage en pixel art** sur une feuille de cahier, puis où on le **fait jouer dans un platformer** dont les niveaux sont tracés directement sur la page. Le projet est jouable sur [GitHub Pages](https://mateo-llr.github.io/Scribbled/).
 
 Tout le rendu est volontairement « brouillon » : pixels bruts (128×128 par pièce) et **boil lines** (les traits tremblent en permanence, comme une animation dessinée à la main).
 
@@ -60,7 +60,7 @@ le site, et le workflow peut aussi être lancé manuellement depuis l'onglet
 Build and deployment** utilise **GitHub Actions**.
 
 Pour ce dépôt, le site est disponible à
-<https://mateo-llr.github.io/carnet-persos/>.
+<https://mateo-llr.github.io/Scribbled/>.
 
 ## Structure du projet
 

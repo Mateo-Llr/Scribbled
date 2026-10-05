@@ -1,4 +1,4 @@
-# Cahier des charges — Carnet à persos
+# Cahier des charges — Scribbled
 
 ## 1. Contexte et objectif
 Créer un site web interactif permettant de **dessiner un personnage en pixel art** pièce par pièce, de l'assembler librement, puis de **le jouer dans un platformer** dont le décor est tracé sur une feuille de cahier. Le site doit donner l'impression d'une **feuille d'écriture dessinée à la main**.
@@ -64,8 +64,8 @@ Créer un site web interactif permettant de **dessiner un personnage en pixel ar
 
 ## 6. Architecture
 - `index.html` : structure, filtres SVG (`#boil` pour la feuille, `#boilL` allégé pour l'éditeur et la voix off).
-- `css/style.css` : papier, panneaux, mode jeu (`body.play`).
-- `js/game.js` : état des pièces, éditeur, placement, moteur de jeu, données de niveaux (`Z`).
+- `style.css` : papier, panneaux, mode jeu (`body.play`).
+- `game.js` : état des pièces, éditeur, placement, moteur de jeu, données de niveaux (`Z`).
 - Modèle d'une pièce : `{ name, c (canvas), sc (canvas affiché), x, y, s, r, f, px, py, anim, undo }`.
 - Moteur : boucle `requestAnimationFrame`, pas de temps plafonné à 33 ms, gravité 1900 px/s², saut -790, ressort -1150, course 400 / marche 230.
 
