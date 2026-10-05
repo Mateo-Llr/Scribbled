@@ -307,6 +307,9 @@ function isCharacterDirty(){return baselineParts!==JSON.stringify(serializeParts
 function makeRecord(name,id){
   return{id,name,parts:serializeParts(),selected:Math.max(0,parts.indexOf(sel))};
 }
+function createCharacterId(){
+  return crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
 function decodeImages(character){
   return Promise.all(character.parts.map(part=>new Promise((resolve,reject)=>{
     const image=new Image();
@@ -361,7 +364,7 @@ function saveCharacter(entered){
   try{
     const existing=characterStore.characters.find(item=>item.name.toLocaleLowerCase()===name.toLocaleLowerCase());
     if(existing&&existing.id!==activeCharacterId&&!window.confirm(`Remplacer le personnage « ${existing.name} » ?`))return;
-    const id=existing?existing.id:activeCharacterId||(crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    const id=existing?existing.id:activeCharacterId||createCharacterId();
     const record=makeRecord(name,id);
     const characters=characterStore.characters.filter(item=>item.id!==id);
     characters.push(record);
@@ -383,20 +386,66 @@ async function chooseCharacter(character){
     characterStatus(`« ${character.name} » est chargé et défini comme personnage par défaut.`);
   }catch(error){characterStatus(`Impossible de charger le personnage : ${error.message}`,true)}
 }
-function showCharacterPicker(){
+function exportCharacter(character){
+  try{
+    const contents=JSON.stringify({format:'scribbled-character',version:1,character},null,2);
+    const url=URL.createObjectURL(new Blob([contents],{type:'application/json'}));
+    const link=document.createElement('a');
+    const filename=character.name.normalize('NFKD').replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_').trim().slice(0,60)||'personnage';
+    link.href=url;link.download=`${filename}.json`;link.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    characterStatus(`« ${character.name} » a été exporté dans un fichier JSON.`);
+  }catch(error){characterStatus(`Impossible d’exporter le personnage : ${error.message}`,true)}
+}
+async function importCharacterFile(file){
+  try{
+    if(file.size>10*1024*1024)throw Error('Le fichier dépasse la taille maximale de 10 Mo.');
+    const data=JSON.parse(await file.text());
+    if(!data||data.format!=='scribbled-character'||data.version!==1)throw Error('Ce fichier n’est pas un export de personnage Scribbled reconnu.');
+    const character=validateStore({version:1,defaultId:null,characters:[data.character]}).characters[0];
+    if(character.name.length>60)throw Error('Le nom du personnage importé dépasse 60 caractères.');
+    await decodeImages(character);
+    const existing=characterStore.characters.find(item=>item.name.toLocaleLowerCase()===character.name.toLocaleLowerCase());
+    if(existing&&!window.confirm(`Un personnage nommé « ${existing.name} » existe déjà. Le remplacer ?`)){
+      characterStatus('Import annulé : le personnage existant a été conservé.');
+      return;
+    }
+    const id=existing?existing.id:createCharacterId();
+    const imported={...character,id};
+    const characters=[...characterStore.characters.filter(item=>item.id!==id),imported];
+    if(!writeCharacterStore({...characterStore,characters}))return;
+    renderSavedCharacters();
+    characterStatus(`« ${character.name} » a été importé dans vos personnages sauvegardés.`);
+  }catch(error){characterStatus(`Impossible d’importer le personnage : ${error.message}`,true)}
+}
+function renderSavedCharacters(){
   const list=$('savedCharacters');list.replaceChildren();
+  const importRow=document.createElement('div');importRow.className='saved-character-row';
+  const importButton=document.createElement('button');importButton.type='button';importButton.className='saved-character';
+  const importPreview=document.createElement('span');importPreview.className='character-import-preview';importPreview.setAttribute('aria-hidden','true');importPreview.textContent='＋';
+  const importName=document.createElement('span');importName.className='saved-character-name';importName.textContent='Importer un personnage';
+  importButton.append(importPreview,importName);importButton.onclick=()=>$('importCharacterFile').click();importRow.appendChild(importButton);list.appendChild(importRow);
   if(!characterStore.characters.length){
     const message=document.createElement('p');message.textContent='Aucun personnage sauvegardé pour le moment.';list.appendChild(message);
-  }else characterStore.characters.forEach(character=>{
-    const button=document.createElement('button');button.className='saved-character';
+    return;
+  }
+  characterStore.characters.forEach(character=>{
+    const row=document.createElement('div');row.className='saved-character-row';
+    const button=document.createElement('button');button.type='button';button.className='saved-character';
     const preview=document.createElement('canvas');preview.className='character-preview';preview.setAttribute('aria-hidden','true');
     const name=document.createElement('span');name.className='saved-character-name';
     name.textContent=character.name+(character.id===characterStore.defaultId?' (par défaut)':'');
     button.append(preview,name);
-    button.onclick=()=>chooseCharacter(character);list.appendChild(button);
+    button.onclick=()=>chooseCharacter(character);
+    const exportButton=document.createElement('button');exportButton.type='button';exportButton.className='export-character';exportButton.textContent='Exporter';
+    exportButton.setAttribute('aria-label',`Exporter « ${character.name} »`);exportButton.onclick=()=>exportCharacter(character);
+    row.append(button,exportButton);list.appendChild(row);
     decodeImages(character).then(images=>drawCharacterPreview(preview,character,images))
       .catch(error=>{characterStatus(`Impossible de créer l’aperçu de « ${character.name} » : ${error.message}`,true)});
   });
+}
+function showCharacterPicker(){
+  renderSavedCharacters();
   $('charactersDialog').showModal();
 }
 $('newCharacter').onclick=()=>{
@@ -407,6 +456,13 @@ $('newCharacter').onclick=()=>{
 };
 $('chooseCharacter').onclick=()=>{characterRevision++;showCharacterPicker()};
 $('saveCharacter').onclick=()=>{$('characterName').value=activeCharacterName||'';$('saveCharacterDialog').showModal();$('characterName').focus()};
+$('importCharacterFile').onchange=async e=>{
+  const input=e.target,file=input.files[0];
+  if(!file)return;
+  characterRevision++;
+  await importCharacterFile(file);
+  input.value='';
+};
 $('saveCharacterForm').onsubmit=e=>{e.preventDefault();if(saveCharacter($('characterName').value))$('saveCharacterDialog').close()};
 $('cancelSaveCharacter').onclick=()=>$('saveCharacterDialog').close();
 $('closeCharacters').onclick=()=>$('charactersDialog').close();

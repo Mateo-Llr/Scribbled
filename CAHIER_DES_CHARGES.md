@@ -54,6 +54,7 @@ Créer un site web interactif permettant de **dessiner un personnage en pixel ar
 - **EF-24** Lisibilité : sols pleins hachurés avec bordures latérales aux creux et aux trous.
 - **EF-25** Sauvegardes locales nommées de personnages complets, sélection du personnage par défaut et restauration au chargement.
 - **EF-26** La sélection d'une couleur (palette, sélecteur ou pipette) conserve l'outil de dessin précédemment actif.
+- **EF-27** Importer et exporter les fiches de personnage complètes en JSON depuis le sélecteur ; valider les données avant l'import et gérer explicitement les noms déjà présents.
 
 ## 5. Exigences non fonctionnelles
 - **ENF-01** Site statique, sans framework, sans build, sans dépendance JavaScript externe.
@@ -79,9 +80,9 @@ Créer un site web interactif permettant de **dessiner un personnage en pixel ar
 5. Un texte ne se réécrit jamais quand il est déjà en cours d'affichage.
 6. Un appui bref donne un petit saut, un appui long un grand saut.
 7. Je peux enregistrer plusieurs personnages dans ce navigateur, choisir celui chargé par défaut et le retrouver après rechargement.
+8. Je peux exporter une fiche en JSON puis l'importer dans le navigateur, avec ses dessins, pivots, placements, calques et animations.
 
 ## 8. Évolutions envisagées
-- Export/import du personnage (PNG, JSON).
 - Éditeur de niveaux intégré.
 - Sons et musique.
 - Nouveaux éléments : plateformes qui s'effondrent, ennemis sauteurs, clés et portes, collectibles, chronomètre.
