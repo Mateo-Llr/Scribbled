@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnet à persos</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Pixelify+Sans:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<filter id="boil" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence class="t" type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="1"/><feDisplacementMap in="SourceGraphic" scale="7"/></filter>
+<filter id="boilL" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence class="t" type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="1"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
+</svg>
+<main>
+<h1>✎ Mon carnet à persos</h1>
+<section class="box edit">
+  <div class="tabs" id="tabs"></div>
+  <div id="edwrap"></div>
+  <div class="row" id="pal"></div>
+  <div class="row">
+    <button id="bPen" class="on">✏️ Crayon</button><button id="bEr">🧽 Gomme</button><button id="bPiv">📍 Articulation</button>
+    <label>Taille <input id="brush" type="range" min="1" max="12" value="3"></label>
+  </div>
+  <div class="row"><input type="color" id="col" value="#2b2b3a"><button id="undo">↩ Annuler</button><button id="clear">Vider</button>
+    <label>Marche <select id="anim"><option value="none">Fixe</option><option value="A">Balancier A</option><option value="B">Balancier B</option><option value="bob">Rebond</option></select></label></div>
+  <p class="hint">📍 puis clique dans le dessin : c'est le point autour duquel la pièce tourne (épaule, hanche…). On peut aussi glisser le rond rouge sur la feuille. L'ordre des onglets = l'ordre des calques.</p>
+</section>
+<section class="box">
+  <div class="row" id="bar"><button id="play" style="font-size:22px">▶ Jouer</button>
+    <span class="playonly"><label>Taille <input id="gs" type="range" min="0.15" max="1" step="0.01" value="0.5"></label> ← → / Q D · Maj courir · Espace saut (appui long = plus haut) · ↓+Espace descendre</span></div>
+  <div class="row edit">
+    <label>Taille <input id="sc" type="range" min="0.3" max="3" step="0.05" value="1.5"></label>
+    <label>Rotation <input id="rot" type="range" min="-180" max="180" value="0"></label>
+  </div>
+  <div class="row edit"><button id="flip">⇋ Miroir</button><button id="front">▲ Devant</button><button id="back">▼ Derrière</button><button id="del">🗑 Supprimer</button></div>
+  <div id="stage"><div id="layer"><div id="actor"></div></div><div id="sel"></div><div id="pv"></div></div>
+  <div id="pad"><span><button data-k="l">◀</button> <button data-k="r">▶</button></span><span><button data-k="d">▼</button> <button data-k="j">⤒ Saut</button></span></div>
+  <p class="hint edit">Glisse une pièce (même vide) pour la déplacer ; flèches du clavier = ajustement au pixel (Maj = ×10).</p>
+
+</section>
+</main>
+<div id="voice"></div>
+<script src="game.js"></script>
+</body>
+</html>
