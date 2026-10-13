@@ -10,6 +10,7 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Les
 - Réinitialisation vers un personnage vierge sans effacer les sauvegardes existantes.
 - Aperçu dessiné de chaque personnage dans la liste de sélection.
 ### Modifié
+- Texte de la voix off affiché en haut au centre de l'écran pendant le jeu, plutôt qu'en bas.
 - Mise en page desktop rééquilibrée en faveur de l'éditeur, avec une zone de dessin adaptée à la hauteur disponible pour limiter le défilement.
 - Répartition de l'espace améliorée sur les fenêtres intermédiaires afin que le panneau de jeu et ses commandes restent visibles.
 - Aperçu du personnage automatiquement recentré et ajusté à la zone de jeu disponible.
