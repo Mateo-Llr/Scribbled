@@ -444,11 +444,13 @@ function openMenu(){
 function closeMenu(silent){
   menuEl.hidden=true;
   if(!silent&&st&&!st.done&&winEl.hidden){st.paused=0;releaseKeys()}
+  if(!silent&&document.body.classList.contains('home')&&$('homeScreen').hidden)$('homeScreen').hidden=false;
 }
 function toggleMenu(){if(!menuAvailable()||!winEl.hidden)return;menuEl.hidden?openMenu():closeMenu()}
 function playLevel(i){
   if(!unlocked(i))return;
   progress.last=i;saveProgress();menuEl.hidden=true;hideWin();
+  document.body.classList.remove('home');$('homeScreen').hidden=true;
   if(!playing)togglePlay();else startLevel(i);
 }
 $('lvlBtn').onclick=openMenu;$('lvlBtnEdit').onclick=openMenu;$('lvlClose').onclick=()=>closeMenu();
@@ -481,6 +483,17 @@ const activateHomeMenu=()=>{
 };
 $('homeScreen').addEventListener('click',activateHomeMenu);
 $('homePlay').onclick=()=>{
+  if(!characterStore.characters.length){
+    document.body.classList.remove('home');
+    $('homeScreen').hidden=true;
+    $('newCharacter').focus();
+    return;
+  }
+  if(menuAvailable()){
+    $('homeScreen').hidden=true;
+    openMenu();
+    return;
+  }
   document.body.classList.remove('home');
   $('homeScreen').hidden=true;
   togglePlay();
