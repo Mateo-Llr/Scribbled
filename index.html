@@ -25,13 +25,29 @@
 <meta name="twitter:image:alt" content="Logo Scribbled dessiné au crayon sur une page de cahier lignée.">
 <link rel="icon" href="icon.ico" sizes="any">
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Pixelify+Sans:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=responsive-character-preview">
+<link rel="stylesheet" href="style.css?v=home-paper-text">
 </head>
-<body>
+<body class="home">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
 <filter id="boil" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence class="t" type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="1"/><feDisplacementMap in="SourceGraphic" scale="7"/></filter>
 <filter id="boilL" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence class="t" type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="1"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
 </svg>
+<section id="homeScreen" aria-label="Menu principal">
+  <button id="homeLogo" type="button" aria-label="Afficher le menu principal">
+    <img src="assets/title.png" alt="Scribbled" width="560" height="274">
+  </button>
+  <p id="homePrompt">Cliquez n’importe où pour démarrer</p>
+  <nav id="homeChoices" aria-label="Menu principal" hidden>
+    <button id="homePlay" type="button">Jouer</button>
+    <button id="homeCharacters" type="button">Personnages</button>
+    <button id="homeCreditsButton" type="button">Crédits</button>
+  </nav>
+  <section id="homeCredits" aria-labelledby="homeCreditsTitle" hidden>
+    <h2 id="homeCreditsTitle">Crédits</h2>
+    <p>Scribbled — un jeu créé par Mateo Llr.</p>
+    <button id="homeCreditsBack" type="button">Retour</button>
+  </section>
+</section>
 <main>
 <h1><img src="assets/title.png" alt="Scribbled" width="280" height="137"></h1>
 <section class="box edit">
@@ -53,7 +69,7 @@
   <p class="hint">📍 puis clique dans le dessin : c'est le point autour duquel la pièce tourne (épaule, hanche…). On peut aussi glisser le rond rouge sur la feuille. L'ordre des onglets = l'ordre des calques.</p>
 </section>
 <section class="box">
-  <div class="row" id="bar"><button id="play" style="font-size:22px">▶ Jouer</button>
+  <div class="row" id="bar"><button id="homeReturn" type="button">⌂ Accueil</button><button id="play" style="font-size:22px">▶ Jouer</button><button id="lvlBtnEdit" class="lvl-open" type="button">☰ Niveaux</button>
     <span class="playonly"><label>Taille <input id="gs" type="range" min="0.15" max="1" step="0.01" value="0.5"><span class="range-value"><input id="gsValue" type="number" min="0.15" max="1" step="0.01" value="0.5" aria-label="Taille du personnage en jeu"><span>×</span></span></label> ← → / Q D · Maj courir · Espace saut (appui long = plus haut) · ↓+Espace descendre</span></div>
   <div class="row edit">
     <label>Taille <input id="sc" type="range" min="0.3" max="3" step="0.05" value="1.5"><span class="range-value"><input id="scValue" type="number" min="0.3" max="3" step="0.05" value="1.5" aria-label="Taille de la pièce"><span>×</span></span></label>
@@ -80,7 +96,17 @@
     <div class="row"><button type="submit">Sauvegarder</button><button id="cancelSaveCharacter" type="button">Annuler</button></div>
   </form>
 </dialog>
+<button id="lvlBtn" class="lvl-open" type="button" aria-haspopup="dialog">☰ Niveaux</button>
+<div id="hud" role="status" aria-live="off"></div>
+<div id="lvlMenu" hidden role="dialog" aria-modal="true" aria-labelledby="lvlTitle">
+  <div class="lvl-panel">
+    <h2 id="lvlTitle">Niveaux</h2>
+    <div id="lvlGrid"></div>
+    <div class="row"><button id="lvlClose" type="button">Fermer</button><span class="hint">Échap = ouvrir / fermer ce menu en jeu.</span></div>
+  </div>
+</div>
+<div id="win" hidden role="dialog" aria-modal="true" aria-label="Niveau terminé"></div>
 <div id="voice"></div>
-<script src="game.js?v=responsive-character-preview"></script>
+<script src="game.js?v=home-paper-text"></script>
 </body>
 </html>

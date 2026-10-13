@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scribbled — Carnet à persos</title>
+<meta name="description" content="Dessine un personnage en pixel art, assemble ses pièces et joue dans un platformer dessiné sur une feuille de cahier.">
+<meta name="theme-color" content="#f8f4e8">
+<link rel="canonical" href="https://mateo-llr.github.io/Scribbled/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Scribbled">
+<meta property="og:title" content="Scribbled — Mon carnet à persos">
+<meta property="og:description" content="Dessine un personnage en pixel art, assemble ses pièces et joue dans un platformer dessiné sur une feuille de cahier.">
+<meta property="og:url" content="https://mateo-llr.github.io/Scribbled/">
+<meta property="og:image" content="https://mateo-llr.github.io/Scribbled/assets/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo Scribbled dessiné au crayon sur une page de cahier lignée.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Scribbled — Mon carnet à persos">
+<meta name="twitter:description" content="Dessine un personnage en pixel art, assemble ses pièces et joue dans un platformer dessiné sur une feuille de cahier.">
+<meta name="twitter:image" content="https://mateo-llr.github.io/Scribbled/assets/og-image.png">
+<meta name="twitter:image:alt" content="Logo Scribbled dessiné au crayon sur une page de cahier lignée.">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Pixelify+Sans:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=character-import-export">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<filter id="boil" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence class="t" type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="1"/><feDisplacementMap in="SourceGraphic" scale="7"/></filter>
+<filter id="boilL" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence class="t" type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="1"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
+</svg>
+<main>
+<h1>✎ Scribbled — Mon carnet à persos</h1>
+<section class="box edit">
+  <div class="row" id="characterActions">
+    <button id="newCharacter">＋ Nouveau</button><button id="chooseCharacter">Choisir un personnage</button><button id="saveCharacter">Sauvegarder le personnage</button>
+  </div>
+  <p id="characterStatus" class="hint" role="status" aria-live="polite"></p>
+  <div class="tabs" id="tabs"></div>
+  <div id="edwrap"></div>
+  <div class="row" id="pal"></div>
+  <div class="row">
+    <button id="bPen" class="on">✏️ Crayon</button><button id="bEr">🧽 Gomme</button><button id="bPick">💉 Pipette</button><button id="bBucket">🪣 Seau</button><button id="bPiv">📍 Articulation</button>
+    <label>Taille <input id="brush" type="range" min="1" max="12" value="3"></label>
+  </div>
+  <div class="row"><input type="color" id="col" value="#2b2b3a"><button id="undo">↩ Annuler</button><button id="clear">Vider</button>
+    <label>Marche <select id="anim"><option value="none">Fixe</option><option value="A">Balancier A</option><option value="B">Balancier B</option><option value="bob">Rebond</option></select></label></div>
+  <p class="hint">📍 puis clique dans le dessin : c'est le point autour duquel la pièce tourne (épaule, hanche…). On peut aussi glisser le rond rouge sur la feuille. L'ordre des onglets = l'ordre des calques.</p>
+</section>
+<section class="box">
+  <div class="row" id="bar"><button id="play" style="font-size:22px">▶ Jouer</button>
+    <span class="playonly"><label>Taille <input id="gs" type="range" min="0.15" max="1" step="0.01" value="0.5"></label> ← → / Q D · Maj courir · Espace saut (appui long = plus haut) · ↓+Espace descendre</span></div>
+  <div class="row edit">
+    <label>Taille <input id="sc" type="range" min="0.3" max="3" step="0.05" value="1.5"></label>
+    <label>Rotation <input id="rot" type="range" min="-180" max="180" value="0"></label>
+  </div>
+  <div class="row edit"><button id="flip">⇋ Miroir</button><button id="front">▲ Devant</button><button id="back">▼ Derrière</button><button id="del">🗑 Supprimer</button></div>
+  <div id="stage"><div id="layer"><div id="actor"></div></div><div id="sel"></div><div id="pv"></div></div>
+  <div id="pad"><span><button data-k="l">◀</button> <button data-k="r">▶</button></span><span><button data-k="d">▼</button> <button data-k="j">⤒ Saut</button></span></div>
+  <p class="hint edit">Glisse une pièce (même vide) pour la déplacer ; flèches du clavier = ajustement au pixel (Maj = ×10).</p>
+
+</section>
+</main>
+<dialog id="charactersDialog">
+  <h2>Choisir un personnage</h2>
+  <div id="savedCharacters"></div>
+  <button id="closeCharacters">Fermer</button>
+</dialog>
+<input id="importCharacterFile" type="file" accept=".json,application/json" hidden>
+<dialog id="saveCharacterDialog">
+  <form id="saveCharacterForm">
+    <h2>Sauvegarder le personnage</h2>
+    <label for="characterName">Nom du personnage</label>
+    <input id="characterName" maxlength="60" required>
+    <div class="row"><button type="submit">Sauvegarder</button><button id="cancelSaveCharacter" type="button">Annuler</button></div>
+  </form>
+</dialog>
+<div id="voice"></div>
+<script src="game.js?v=character-import-export"></script>
+</body>
+</html>
